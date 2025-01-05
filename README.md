@@ -18,7 +18,7 @@ Type `wmake /f makefile.16`
 ### Is DJGPP supported?
 
 Not yet. I need to understand how video ram access works and put together the makefile.
-I guess this is a good place to start: <https://delorie.com/djgpp/ug/compiling/port16.html>
+I guess this is a good place to start: <https://www.delorie.com/djgpp/doc/ug/compiling/port16.html>
 
 ## Why?
 
