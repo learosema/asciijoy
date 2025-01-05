@@ -1,12 +1,11 @@
 # Compiler and linker settings
 CC = owcc
 LD = owcc
-CFLAGS = -zq -c -xc++ -bdos4g
-LDFLAGS = -zq -bdos4g
+CFLAGS = -zq -c -xc++
+LDFLAGS = -zq
 CP = copy
 RM = del
 
-DOS4GW_RUNTIME = $(%WATCOM)\binw\dos4gw.exe
 
 # Source files
 SRCS = main.cpp textmode.cpp mouse.cpp
@@ -18,10 +17,7 @@ OBJS = $(SRCS:.cpp=.obj)
 TARGET = asciijoy.exe
 
 # Default target
-all: $(TARGET) postbuild .symbolic
-
-postbuild: .symbolic
-	$(CP) $(DOS4GW_RUNTIME) .
+all: $(TARGET) .symbolic
 
 # Build rule for object files
 .cpp.obj: %.cpp

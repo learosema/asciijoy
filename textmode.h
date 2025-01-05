@@ -4,21 +4,36 @@
 #include <stdint.h>
 
 
-#if !defined(BYTE)
-#define BYTE unsigned char
+#ifdef __386__
+#define INTR int386
+#define VRAMPTR uint8_t *
+#define TEXT_VRAM_BASE (uint8_t *)0xb8000
+#define TEXT_VRAM_BASE_MONO (uint8_t *)0xb0000
+#define BIOS_VIDEO_PORT_ADDRESS (uint16_t *)(0x0463)
+#else
+#define INTR int86
+#define VRAMPTR uint8_t far *
+#define BIOS_VIDEO_PORT_ADDRESS (uint16_t far *)(0x00400063)
+#define TEXT_VRAM_BASE (uint8_t far *)(0xb8000000)
+#define TEXT_VRAM_BASE_MONO (uint8_t far *)(0xb0000000)
 #endif
 
-#if !defined(UINT)
-#define UINT unsigned int
-#endif
+#define PAGE_SIZE_80X25 0x1000
+#define PAGE_SIZE_80X50 0x2040
+
+#define TEXT_VRAM (g_currentMode.vram+g_currentMode.page*g_currentMode.pageSize)
+
 
 typedef struct MODEINFO
 {
+	VRAMPTR vram;
 	uint8_t mode;
 	uint8_t numCols;
 	uint8_t numRows;
 	uint8_t page;
 	uint16_t pageSize;
+	bool  hasColors;
+	uint16_t videoPortAddress;
 } MODEINFO;
 
 typedef struct RECT
@@ -30,8 +45,6 @@ typedef struct RECT
 } RECT;
 
 void textmode_setmode(uint8_t mode);
-
-void textmode_retrieve_modeinfo();
 
 MODEINFO *textmode_get_modeinfo();
 
@@ -50,6 +63,13 @@ void textmode_hline(
 	uint8_t character,
 	uint8_t color
 );
+
+void textmode_vline(
+		int x,
+		int y,
+		uint8_t height,
+		uint8_t character,
+		uint8_t color);
 
 void textmode_colorize_line(
 	int x,
