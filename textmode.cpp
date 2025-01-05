@@ -32,7 +32,7 @@ void textmode_setmode(uint8_t mode)
 {
 	union REGS regs;
 	if (mode > 3 && mode != 7) {
-		printf("mode: %d not supported by library. Defaulting to mode 3\n"); 
+		printf("mode: %d not supported by library. Defaulting to mode 3\n");
 		mode = 3;
 	}
 	regs.h.ah = 0;
@@ -49,11 +49,15 @@ MODEINFO *textmode_get_modeinfo()
 void textmode_font8()
 {
 	union REGS regs;
+	if (g_currentMode.mode == 3 && g_currentMode.hasColors == false) {
+		// Hercules/MDA won't support switching to 50 lines
+		return;
+	}
 	regs.w.ax = 0x1112;
 	regs.w.bx = 0;
 	INTR(0x10, &regs, &regs);
 	g_currentMode.numRows = 50;
-	g_currentMode.pageSize=PAGE_SIZE_80X50;
+	g_currentMode.pageSize= PAGE_SIZE_80X50;
 }
 
 void textmode_set_page(uint8_t page)
@@ -68,7 +72,7 @@ void textmode_set_page(uint8_t page)
 
 	union REGS regs;
 	regs.h.ah = 0x05;
-	regs.h.al = 
+	regs.h.al =
 	INTR(0x10, &regs, &regs);
 	g_currentMode.page = page;
 }
@@ -244,13 +248,13 @@ void textmode_box(int x, int y, uint8_t width, uint8_t height, uint8_t color)
 
 	textmode_hline(
 		x + width - 1, y, 1,
-		CP_THIN_LEFT_THIN_DOWN, color); 
+		CP_THIN_LEFT_THIN_DOWN, color);
 
 	textmode_vline(x, y+1, height - 2,
-		CP_THIN_VERTICAL, color); 
+		CP_THIN_VERTICAL, color);
 
 	textmode_vline(x + width -1, y+1, height - 2,
-		CP_THIN_VERTICAL, color); 
+		CP_THIN_VERTICAL, color);
 
 	textmode_hline(
 		x, y + height - 1, 1,
@@ -265,17 +269,17 @@ void textmode_box(int x, int y, uint8_t width, uint8_t height, uint8_t color)
 		CP_THIN_LEFT_THIN_UP, color);
 
 	if (width > 2 && height > 2) {
-		textmode_fill_area(x + 1, y + 1, 
+		textmode_fill_area(x + 1, y + 1,
 			width - 2, height - 2, ' ', color);
 	}
 }
 
 
 void textmode_dblbox(
-	int x, 
+	int x,
 	int y,
 	uint8_t width,
-	uint8_t height, 
+	uint8_t height,
 	uint8_t color
 )
 {
@@ -291,13 +295,13 @@ void textmode_dblbox(
 
 	textmode_hline(
 		x + width - 1, y, 1,
-		CP_THICK_LEFT_THICK_DOWN, color); 
+		CP_THICK_LEFT_THICK_DOWN, color);
 
 	textmode_vline(x, y+1, height - 2,
-		CP_THICK_VERTICAL, color); 
+		CP_THICK_VERTICAL, color);
 
 	textmode_vline(x + width -1, y+1, height - 2,
-		CP_THICK_VERTICAL, color); 
+		CP_THICK_VERTICAL, color);
 
 	textmode_hline(
 		x, y + height - 1, 1,
@@ -312,7 +316,7 @@ void textmode_dblbox(
 		CP_THICK_LEFT_THICK_UP, color);
 
 	if (width > 2 && height > 2) {
-		textmode_fill_area(x + 1, y + 1, 
+		textmode_fill_area(x + 1, y + 1,
 			width - 2, height - 2, ' ', color);
 	}
 }
