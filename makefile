@@ -5,8 +5,11 @@ CFLAGS = -zq -c -xc++ -bdos4g
 LDFLAGS = -zq -bdos4g
 CP = copy
 RM = del
-
-DOS4GW_RUNTIME = $(%WATCOM)\binw\dos4gw.exe
+!ifdef __UNIX__
+DOS4GW_RUNTIME=$(%WATCOM)/binw/dos4gw.exe
+!else
+DOS4GW_RUNTIME=$(%WATCOM)\binw\dos4gw.exe
+!endif
 
 # Source files
 SRCS = main.cpp textmode.cpp mouse.cpp
